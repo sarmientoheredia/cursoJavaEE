@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:cc="http://xmlns.jcp.org/jsf/composite"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+        <h:outputStylesheet name="primeicons/primeicons.css" library="primefaces" />
+        <h:outputStylesheet name="estilos.css" library="css"/>
+    </h:head>
+    <h:body>
+        <p:growl id="growl" showDetail="true" sticky="true" />  
+
+        <h:form id="categoriaForm">
+            <p:dataTable id="tableCategoria" value="#{categoriaBean.categoriaList}" var="cat"
+                         selectionMode="single" selection="#{categoriaBean.categoria}" rowKey="#{cat.id}">
+                <p:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Codigo"/>
+                    </f:facet>
+                    <h:outputText value="#{cat.id}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Nombre"/>
+                    </f:facet>
+                    <h:outputText value="#{cat.nombre}"/>
+                </p:column>
+                <p:column>
+                    <f:facet name="header">
+                        <p:outputLabel value="Estado"/>
+                    </f:facet>
+                    <h:outputText value="#{cat.estado}"/>
+                </p:column>
+
+                <f:facet name="footer">
+                    <p:commandButton value="Nuevo" oncomplete="PF('formCategoria').show()"/>
+                    <p:commandButton value="Detalles" process="tableCategoria" update=":categoriaForm" oncomplete="PF('catDialog').show()"/>
+                </f:facet>
+            </p:dataTable>
+
+
+
+            <!--INICIO FORMULARIO VER DETALLES--> 
+            <p:dialog header="Categoria" widgetVar="catDialog" modal="true" showEffect="fade" hideEffect="fade" resizable="false">
+
+                <div class="ui-fluid">
+                    <div class="p-field">
+                        <p:outputLabel for="codigo" value="Codigo" />
+                        <p:inputText  id="codigo" value="#{categoriaBean.categoria.id}" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="nombre" value="Nombre" />
+                        <p:inputText   id="nombre" value="#{categoriaBean.categoria.nombre}" />
+                    </div>
+                    <div class="p-field">
+                        <p:outputLabel for="txtEstado" value="Estado:" />
+                        <p:inputText  id="txtEstado" value="#{categoriaBean.categoria.estado}" />
+                    </div>
+                    <div class="p-field ">
+                        <p:commandButton value="Aceptar" oncomplete="PF('catDialog').hide()" />
+                    </div>
+                </div>
+            </p:dialog>
+            <!--INICIO FORMULARIO VER DETALLES--> 
+
+
+            //INICO DLG NUEVA CATEGORIA
+            <p:dialog id="dlgCategoria" widgetVar="formCategoria" modal="true" showEffect="explode">
+                <h:panelGrid columns="2">
+                    <p:outputLabel value="Codigo"/>
+                    <p:inputText value="#{categoriaBean.categoria.id}"/>
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{categoriaBean.categoria.nombre}"/>
+                    <p:outputLabel value="Estado"/>
+                    <p:inputText value="#{categoriaBean.categoria.estado}"/>
+                </h:panelGrid>
+                <p:commandButton value="Aceptar" action="#{categoriaBean.agregarCategoria(categoriaBean.categoria)}" update=":categoriaForm:tableCategoria,:growl" oncomplete="PF('formCategoria').hide()"/>
+            </p:dialog>
+            //FIN DLG NUEVA CATEGORIA
+
+
+        </h:form>
+    </h:body>
+</html>

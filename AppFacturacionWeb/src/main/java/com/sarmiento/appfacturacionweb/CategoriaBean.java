@@ -6,7 +6,6 @@ import java.io.Serializable;
 import java.util.List;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
-import javax.faces.application.FacesMessage;
 import javax.faces.context.FacesContext;
 import javax.inject.Named;
 import javax.faces.view.ViewScoped;
@@ -32,7 +31,6 @@ public class CategoriaBean implements Serializable {
     @PostConstruct
     public void init() {
         categoriaList = categoriaFacadeLocal.findAll();
-        categoria = new Categoria();
     }
 
     //INICO DE LOS METODOS GETTERS AND SETTERS
@@ -54,21 +52,26 @@ public class CategoriaBean implements Serializable {
     //INICO DE LOS METODOS GETTERS AND SETTERS
 
     //INICO DE LOS METODOS
-    public void agregarCategoria(Categoria categoria) {
-        try {
-            categoriaFacadeLocal.create(categoria);
-            context.addMessage(null, new FacesMessage("Exito", "Categoria: " + "Registrada con exito"));
-        } catch (Exception e) {
-            System.out.println("mensaje 1" + e.getMessage());
-            System.out.println("clse 1" + e.getClass().getName());
-
-            System.out.println("mensaje 2 " + e.getCause().getMessage());
-            System.out.println("clase 2 " + e.getCause().getClass().getName());
-
-            System.out.println("mensaje 3 " + e.getCause().getCause().getMessage());
-            System.out.println("clase 3 " + e.getCause().getCause().getClass().getName());
-        }
+    
+    //metodos para instanciar y que me muestre el panel para agregar nuevo
+    public void nuevo() {
+        categoria = new Categoria();
     }
     
+    public void cancelar(){
+        categoria=null;
+    }
+    
+    
+    //metodo para guardar el objeto
+    public void guardar(){
+        categoriaFacadeLocal.create(categoria);
+        //reinicio la variable para que me muestre el listado 
+        categoria=null;
+        
+        //metodo para que me recargue el listado de las categorias
+        init();
+    }
+
     //FIN DE LOS METODOS
 }

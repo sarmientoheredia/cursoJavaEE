@@ -6,14 +6,14 @@
       xmlns:f="http://xmlns.jcp.org/jsf/core"
       xmlns:p="http://primefaces.org/ui">
     <h:head>
-        <title>TODO supply a title</title>
+        <title>Categoria</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
     <h:body>
-           <p:growl id="growl" life="1000" />  
+        <p:growl id="growl" life="1000" />  
 
         <h:form id="form1">
-            <p:panel header="LIstado de las Categorias" rendered="#{categoriaBean.categoria==null}">
+            <p:panel header="Listado de las Categorias" rendered="#{categoriaBean.categoria==null}" >
                 <p:commandButton value="Nuevo" actionListener="#{categoriaBean.nuevo()}" update="form1"/>
                 <p:dataTable paginator="true" rows="5"
                              widgetVar="tablaIngreso"
@@ -57,32 +57,32 @@
 
 
             <!--INICO DLG NUEVA CATEGORIA-->
-            <p:panel id="formulario" header="Nuevo Registro" rendered="#{categoriaBean.categoria!=null}" class="ui-lg-4" >
-                <p:panelGrid columns="2">
-                    <p:outputLabel value="Id:" for="txtId"/>
-                    <p:inputNumber id="txtId" value="#{categoriaBean.categoria.id}" 
-                                   decimalPlaces="0"
-                                   disabled="#{categoriaBean.modoEdicion==true}"
-                                   required="true" requiredMessage="El id es requerido">
-                        <p:ajax event="change" listener="#{categoriaBean.validarId()}" update="formulario,:growl"/>
-                    </p:inputNumber>
+                <p:panel id="formulario" header="Nuevo Registro" rendered="#{categoriaBean.categoria!=null}" class="ui-lg-4" >
+                    <p:panelGrid columns="2">
+                        <p:outputLabel value="Id:" for="txtId"/>
+                        <p:inputNumber id="txtId" value="#{categoriaBean.categoria.id}" 
+                                       decimalPlaces="0"
+                                       disabled="#{categoriaBean.modoEdicion==true}"
+                                       required="true" requiredMessage="El id es requerido">
+                            <p:ajax event="change" listener="#{categoriaBean.validarId()}" update="formulario,:growl"/>
+                        </p:inputNumber>
 
 
 
-                    <p:outputLabel value="Nombre:" for="txtNombre"/>
-                    <p:inputText id="txtNombre" value="#{categoriaBean.categoria.nombre}" required="true" />
+                        <p:outputLabel value="Nombre:" for="txtNombre"/>
+                        <p:inputText id="txtNombre" value="#{categoriaBean.categoria.nombre}" required="true" />
 
-                    <p:outputLabel value="EStado:" for="txtEstado"/>
-                    <p:selectOneRadio id="txtEstado" value="#{categoriaBean.categoria.estado}" 
-                                      required="true" >
-                        <f:selectItem itemLabel="Activo" itemValue="A"/>
-                        <f:selectItem itemLabel="Inactivo" itemValue="I"/>
-                    </p:selectOneRadio>
+                        <p:outputLabel value="EStado:" for="txtEstado"/>
+                        <p:selectOneRadio id="txtEstado" value="#{categoriaBean.categoria.estado}" 
+                                          required="true" >
+                            <f:selectItem itemLabel="Activo" itemValue="A"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                        </p:selectOneRadio>
 
-                </p:panelGrid>
-                <p:commandButton value="Aceptar" actionListener="#{categoriaBean.guardar()}" update="form1,:growl" />
-                <p:commandButton value="Cancelar" action="#{categoriaBean.cancelar()}" update="form1" immediate="true"/>
-            </p:panel>
+                    </p:panelGrid>
+                    <p:commandButton value="Aceptar" actionListener="#{categoriaBean.guardar()}" update="form1,:growl" />
+                    <p:commandButton value="Cancelar" action="#{categoriaBean.cancelar()}" update="form1" immediate="true"/>
+                </p:panel>
             <!--FIN DLG NUEVA CATEGORIA-->
         </h:form>
     </h:body>

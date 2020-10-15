@@ -1,4 +1,7 @@
 com\sarmiento\sessionBeans\CategoriaFacadeLocal.class
+com\sarmiento\entidades\Producto.class
+com\sarmiento\sessionBeans\ProductoFacadeLocal.class
 com\sarmiento\sessionBeans\AbstractFacade.class
 com\sarmiento\sessionBeans\CategoriaFacade.class
+com\sarmiento\sessionBeans\ProductoFacade.class
 com\sarmiento\entidades\Categoria.class

@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <h:body>
+        <p:growl id="growl" life="4000"/>
+        <h:form id="form1">
+
+            <p:panel header="Listado de productos" rendered="#{productoBean.producto==null}">
+                <p:commandButton value="Nuevo" icon="" action="#{productoBean.nuevo()}" update="form1,:growl" />
+                <p:dataTable id="dtProducto" value="#{productoBean.productoList}" var="pro">
+                    <p:column headerText="Codigo">
+                        <h:outputText value="#{pro.id}" />
+                    </p:column>
+
+                    <p:column headerText="Categoria">
+                        <h:outputText value="#{pro.categoria.nombre}" />
+                    </p:column>
+
+                    <p:column headerText="Nombre">
+                        <h:outputText value="#{pro.nombre}" />
+                    </p:column>
+
+                    <p:column headerText="Precio">
+                        <h:outputText value="#{pro.precio}" />
+                    </p:column>
+
+                    <p:column headerText="Estado">
+                        <h:outputText value="Activo" rendered="#{pro.estado.toString()=='A'}" />
+                        <h:outputText value="Inactivo" rendered="#{pro.estado.toString()=='I'}" />
+                    </p:column>
+                    <p:column headerText="opciones" width="10%">
+                        <p:commandButton icon="ui-icon-pencil" action="#{productoBean.setProducto(pro)}" update="form1"/>
+                        <p:commandButton icon="ui-icon-trash" action="#{productoBean.eliminar(pro)}" update="dtProducto,:growl"/>
+                    </p:column>
+                </p:dataTable>
+              
+            </p:panel>
+
+
+            <p:panel header="#{productoBean.producto.id==null ? 'Ingreso' : 'Edicion'} de Producto" rendered="#{productoBean.producto!=null}">
+                <p:panelGrid columns="2">
+                    <p:outputLabel value="Id: " rendered="#{productoBean.producto.id!=null}" />
+                    <p:outputLabel value="#{productoBean.producto.id} " rendered="#{productoBean.producto.id!=null}"/>
+
+                    <p:outputLabel value="Nombre"/>
+                    <p:inputText value="#{productoBean.producto.nombre}" required="true" requiredMessage="El nombre es requerido">
+                        <p:ajax event="change" listener="#{productoBean.verificarNombre()}" update="form1,:growl"/>
+                    </p:inputText>
+
+                    <p:outputLabel for="txtPrecio" value="Precio"/>
+                    <p:inputNumber id="txtPrecio" value="#{productoBean.producto.precio}"/>
+
+                    <p:outputLabel for="txtCategoria" value="Caegoria"/>
+                    <p:selectOneMenu id="txtCategoria" value="#{productoBean.producto.categoria}" required="true" 
+                                     converter="omnifaces.SelectItemsConverter">
+                        <f:selectItem itemLabel="--Seleccione--" noSelectionOption="true" />
+                        <f:selectItems value="#{categoriaBean.categoriaList}" var="cat" itemLabel="#{cat.nombre}" itemValue="#{cat}" />
+                    </p:selectOneMenu>
+
+                    <p:outputLabel for="txtEstado" value="Estado" />
+                    <p:selectOneRadio id="txtEstado" value="#{productoBean.producto.estado}" 
+                                      required="true" >
+                        <f:selectItem itemLabel="Activo" itemValue="A"/>
+                        <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                    </p:selectOneRadio>
+
+
+                </p:panelGrid>
+                <p:panelGrid columns="2">
+                    <p:commandButton value="Aceptar" action="#{productoBean.grabar()}" update="form1,:growl" />
+                    <p:commandButton value="Cancelar" action="#{productoBean.init()}" update="form1,:growl" immediate="true"/>
+                </p:panelGrid>
+            </p:panel>
+
+        </h:form>
+
+    </h:body>
+</html>

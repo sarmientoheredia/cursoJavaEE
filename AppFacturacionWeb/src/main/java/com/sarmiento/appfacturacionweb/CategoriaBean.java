@@ -2,6 +2,7 @@ package com.sarmiento.appfacturacionweb;
 
 import com.sarmiento.entidades.Categoria;
 import com.sarmiento.sessionBeans.CategoriaFacadeLocal;
+import com.sarmiento.utilitarios.Mensaje;
 import java.io.Serializable;
 import java.util.List;
 import java.util.Locale;
@@ -73,6 +74,11 @@ public class CategoriaBean implements Serializable {
         if (modoEdicion) {
             categoriaFacadeLocal.edit(categoria);
         } else {
+            Categoria cat=categoriaFacadeLocal.find(categoria.getId());
+            if(cat!=null){
+                Mensaje.mostrarError("La categoria ya existe");
+                return;
+            }
             categoriaFacadeLocal.create(categoria);
         }
         //reinicio la variable para que me muestre el listado 

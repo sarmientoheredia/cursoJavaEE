@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sarmiento.sessionBeans;
 
 import com.sarmiento.entidades.Producto;
@@ -36,5 +31,6 @@ public class ProductoFacade extends AbstractFacade<Producto> implements Producto
         query.setParameter("nombre", nombre);
         return (Producto) query.getSingleResult();
     }
+    
     
 }

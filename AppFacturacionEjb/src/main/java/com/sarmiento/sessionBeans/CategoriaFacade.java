@@ -6,9 +6,11 @@
 package com.sarmiento.sessionBeans;
 
 import com.sarmiento.entidades.Categoria;
+import java.util.List;
 import javax.ejb.Stateless;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import javax.persistence.Query;
 
 /**
  *
@@ -28,5 +30,27 @@ public class CategoriaFacade extends AbstractFacade<Categoria> implements Catego
     public CategoriaFacade() {
         super(Categoria.class);
     }
-    
+
+    @Override
+    public List<Categoria> findAll() {
+        Query q = em.createNamedQuery("Categoria.findAll", Categoria.class);
+        return q.getResultList();
+    }
+
+    @Override
+    public List<Categoria> findActive() {
+        char estado = 'A';
+        Query query = em.createQuery("SELECT c FROM Categoria c WHERE UPPER(c.estado)=:estado ");
+        query.setParameter("estado", estado);
+        return query.getResultList();
+
+    }
+
+    @Override
+    public Categoria findByNombre(String nombre) {
+        Query query = em.createNamedQuery("Categoria.findByNombre", Categoria.class);
+        query.setParameter("nombre", nombre);
+        return (Categoria) query.getSingleResult();
+    }
+
 }

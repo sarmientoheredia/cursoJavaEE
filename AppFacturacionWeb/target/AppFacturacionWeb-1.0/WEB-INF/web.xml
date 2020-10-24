@@ -19,12 +19,12 @@
         </session-timeout>
     </session-config>
     <welcome-file-list>
-        <welcome-file>/vistas/producto/Producto.xhtml</welcome-file>
+        <welcome-file>/vistas/plantilla/Plantilla.xhtml</welcome-file>
     </welcome-file-list>
     
     <context-param>
         <param-name>primefaces.THEME</param-name>
-        <param-value>omega</param-value>
+        <param-value>redmond</param-value>
     </context-param>
     
 </web-app>

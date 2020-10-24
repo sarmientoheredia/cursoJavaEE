@@ -1,3 +1,8 @@
-com\sarmiento\utilitarios\Mensaje.class
-com\sarmiento\appfacturacionweb\CategoriaBean.class
+com\sarmiento\appfacturacionweb\ClienteBean.class
 com\sarmiento\appfacturacionweb\ProductoBean.class
+com\sarmiento\utilitarios\TipoReporte.class
+com\sarmiento\appfacturacionweb\SeleccionClienteBean.class
+com\sarmiento\utilitarios\Mensaje.class
+com\sarmiento\appfacturacionweb\FacturaBean.class
+com\sarmiento\utilitarios\JasperReportUtil.class
+com\sarmiento\appfacturacionweb\CategoriaBean.class

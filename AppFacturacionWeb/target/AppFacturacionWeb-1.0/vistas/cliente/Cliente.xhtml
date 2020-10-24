@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://xmlns.jcp.org/jsf/html"
+      xmlns:f="http://xmlns.jcp.org/jsf/core"
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
+    <h:head>
+        <title>TODO supply a title</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    </h:head>
+    <ui:composition template="./../plantilla/Plantilla.xhtml">
+
+        <ui:define name="contenido">
+
+            <h:form id="form1"  class="ui-g centrar">
+
+                <p:confirmDialog global="true">
+                    <p:commandButton id="si" value="Aceptar" styleClass="ui-confirmdialog-yes"/>
+                    <p:commandButton id="no" value="Cancelar" styleClass="ui-confirmdialog-no"/>
+                </p:confirmDialog>
+
+                <p:panel header="Listado de clientes" rendered="#{clienteBean.cliente==null}" >
+                    <p:commandButton value="Nuevo" icon="pi pi-user-plus" action="#{clienteBean.nuevo()}" update="form1"/>
+                    <p:dataTable id="dtCliente" value="#{clienteBean.clienteList}" var="cli"
+                                 emptyMessage="No existen clientes registrados"
+                                 selectionMode="single" selection="#{clienteBean.cliente}" rowKey="#{cli.id}"
+                                 paginator="true" rows="10"
+                                 rowStyleClass="#{cli.estado.hashCode()==73 ? 'old' : 'null'}"
+                                 widgetVar="tablaCliente"
+                                 globalFilterFunction="#{clienteBean.globalFilterFunction}">
+
+                        <f:facet name="header">
+                            <p:outputPanel >
+                                <h:outputText class="pi pi-search" style="margin-right: 20px;" />
+                                <p:inputText id="globalFilter" onkeyup="PF('tablaCliente').filter()" style="text-align: center" placeholder="Buscar" />
+                            </p:outputPanel>
+                        </f:facet>
+
+                        <p:column headerText="Codigo" width="55">
+                            <h:outputText value="#{cli.id}"/>
+                        </p:column>
+
+                        <p:column headerText="Cedula">
+                            <h:outputText value="#{cli.cedula}"/>
+                        </p:column>
+
+                        <p:column headerText="Apellidos">
+                            <h:outputText value="#{cli.apellido}"/>
+                        </p:column>
+
+                        <p:column headerText="Nombres">
+                            <h:outputText value="#{cli.nombre}"/>
+                        </p:column>
+
+                        <p:column headerText="Telefono">
+                            <h:outputText value="#{cli.telefono}"/>
+                        </p:column>
+
+                        <p:column headerText="Correo">
+                            <h:outputText value="#{cli.correo}"/>
+                        </p:column>
+
+                        <p:column headerText="Direccion">
+                            <h:outputText value="#{cli.direccion}"/>
+                        </p:column>
+
+                        <p:column headerText="Estado" width="80">
+                            <h:outputText value="Activo" rendered="#{cli.estado.toString()=='A'}"/>
+                            <h:outputText value="Inactivo" rendered="#{cli.estado.toString()=='I'}"/>
+                        </p:column>
+                        <p:column headerText="Opciones" width="100">
+                            <p:commandButton icon="ui-icon-pencil" action="#{clienteBean.setCliente(cli)}" update="form1" />
+                            <p:commandButton icon="ui-icon-trash" action="#{clienteBean.eliminar(cli)}" update="form1,:growl">
+                                <p:confirm header="Eliminacion de cliente" message="Onfirme si desea eliminar el cliente" />
+                            </p:commandButton>
+                        </p:column>
+
+                    </p:dataTable>
+                </p:panel>
+
+
+
+                <p:panel header="#{clienteBean.cliente.id==null ? 'Registro': 'Actualizacion'} de cliente" rendered="#{clienteBean.cliente!=null}" class=" ui-lg-6 formulario" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Codigo: " rendered="#{clienteBean.cliente.id!=null}" style="font-size: 20px" />
+                        <p:inputText value="#{clienteBean.cliente.id}" rendered="#{clienteBean.cliente.id!=null}" class="cajasTexto" disabled="true"/>
+
+                        <p:outputLabel value="Cedula: " />
+                        <p:inputText id="txtCedula" value="#{clienteBean.cliente.cedula}" class="cajasTexto" disabled="#{clienteBean.cliente.id!=null}"
+                                     requiredMessage="La cedula es requerida" required="true">
+                            <p:ajax event="change" listener="#{clienteBean.operacionCedula()}" update=":growl" />
+                        </p:inputText>
+                        
+                     
+
+                        <p:outputLabel value="Apellidos: " />
+                        <p:inputText value="#{clienteBean.cliente.apellido}" class="cajasTexto" />
+
+                        <p:outputLabel value="Nombres:" />
+                        <p:inputText value="#{clienteBean.cliente.nombre}" class="cajasTexto" />
+
+                        <p:outputLabel value="Telefono: "/>
+                        <p:inputText value="#{clienteBean.cliente.telefono}" class="cajasTexto" />
+
+                        <p:outputLabel value="Correo: " />
+                        <p:inputText value="#{clienteBean.cliente.correo}" class="cajasTexto" >
+                            <p:ajax event="change" listener="#{clienteBean.verificarCorreo()}" update="form1,:growl"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="Direccion: " />
+                        <p:inputText value="#{clienteBean.cliente.direccion}" class="cajasTexto"  />
+
+                        <p:outputLabel value="Estado: " rendered="#{clienteBean.cliente.id!=null}" />
+                        <p:selectOneRadio id="txtEstado" value="#{clienteBean.cliente.estado}" rendered="#{clienteBean.cliente.id!=null}" class="cajasTexto" >
+                            <f:selectItem itemLabel="Activo" itemValue="A"/>
+                            <f:selectItem itemLabel="Inactivo" itemValue="I"/>
+                        </p:selectOneRadio>
+                    </h:panelGrid>
+                    <div class="ui-g botonera">
+                        <p:commandButton value="Aceptar"  icon="pi pi-check" action="#{clienteBean.grabar()}" update="form1,:growl" style="margin-right: 20px"/>
+                        <p:commandButton value="Cancelar" icon="pi pi-times" action="#{clienteBean.init()}" update="form1" immediate="true"/>
+                    </div>
+                </p:panel>
+
+
+            </h:form>
+        </ui:define>
+    </ui:composition>
+</html>

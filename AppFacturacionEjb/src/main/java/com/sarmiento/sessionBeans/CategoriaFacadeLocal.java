@@ -1,8 +1,3 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
 package com.sarmiento.sessionBeans;
 
 import com.sarmiento.entidades.Categoria;
@@ -24,10 +19,15 @@ public interface CategoriaFacadeLocal {
 
     Categoria find(Object id);
 
+    Categoria findByNombre(String nombre);
+
     List<Categoria> findAll();
 
-    List<Categoria> findRange(int[] range);
+    List<Categoria> findRange(int[] range
+
+    );
 
     int count();
-    
+
+    List<Categoria> findActive();
 }

@@ -4,86 +4,98 @@
 <html xmlns="http://www.w3.org/1999/xhtml"
       xmlns:h="http://xmlns.jcp.org/jsf/html"
       xmlns:f="http://xmlns.jcp.org/jsf/core"
-      xmlns:p="http://primefaces.org/ui">
+      xmlns:p="http://primefaces.org/ui"
+      xmlns:ui="http://xmlns.jcp.org/jsf/facelets">
     <h:head>
         <title>Categoria</title>
         <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
     </h:head>
-    <h:body>
-        <p:growl id="growl" life="1000" />  
+    <ui:composition template="./../plantilla/Plantilla.xhtml">
+        <ui:define name="contenido">
 
-        <h:form id="form1">
-            <p:panel header="Listado de las Categorias" rendered="#{categoriaBean.categoria==null}" >
-                <p:commandButton value="Nuevo" actionListener="#{categoriaBean.nuevo()}" update="form1"/>
-                <p:dataTable paginator="true" rows="5"
-                             widgetVar="tablaIngreso"
-                             globalFilterFunction="#{categoriaBean.globalFilterFunction}"
-                             sortBy="#{cat.id}" sortOrder="descending" id="dtCategoria" value="#{categoriaBean.categoriaList}" var="cat">
+            <h:form id="form1" class="ui-g centrar">
+                <p:panel header="Listado de las Categorias" rendered="#{categoriaBean.categoria==null}" >
+                    <p:commandButton value="Nuevo" icon="pi pi-plus-circle" actionListener="#{categoriaBean.nuevo()}" update="form1"/>
+                    <p:dataTable id="dtCategoria" value="#{categoriaBean.categoriaList}" var="cat"
+                                 emptyMessage="No exixten categorias registradas"
+                                 paginator="true" rows="5"
+                                 selectionMode="single" selection="#{categoriaBean.categoria}" rowKey="#{cat.id}"
+                                 rowStyleClass="#{cat.estado.hashCode()==73 ? 'old':'null'}"
+                                 widgetVar="tablaIngreso"
+                                 globalFilterFunction="#{categoriaBean.globalFilterFunction}"
+                                 sortBy="#{cat.id}" sortOrder="descending"
 
-                    <f:facet name="header">
-                        <p:outputPanel >
-                            <h:outputText class="pi pi-search" style="margin-right: 20px;" />
-                            <p:inputText id="globalFilter" onkeyup="PF('tablaIngreso').filter()" style="text-align: center" placeholder="Buscar" />
-                        </p:outputPanel>
-                    </f:facet>
+                                 paginatorTemplate="{CurrentPageReport} {FirstPageLink} {PreviousPageLink} {PageLinks} {NextPageLink} {LastPageLink} {RowsPerPageDropdown}"
+                                 currentPageReportTemplate="{startRecord}-{endRecord} de {totalRecords} records"
+                                 rowsPerPageTemplate="5,10,15"
 
-                    <p:column sortBy="#{cat.id}">
+                                 >
+
                         <f:facet name="header">
-                            <p:outputLabel value="Codigo"/>
+                            <p:outputPanel >
+                                <h:outputText class="pi pi-search" style="margin-right: 20px;" />
+                                <p:inputText id="globalFilter" onkeyup="PF('tablaIngreso').filter()" style="text-align: center" placeholder="Buscar" />
+                            </p:outputPanel>
                         </f:facet>
-                        <h:outputText value="#{cat.id}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <p:outputLabel value="Nombre"/>
-                        </f:facet>
-                        <h:outputText value="#{cat.nombre}"/>
-                    </p:column>
-                    <p:column>
-                        <f:facet name="header">
-                            <p:outputLabel value="Estado"/>
-                        </f:facet>
-                        <h:outputLabel value="#{cat.estado.toString()=='A' ? 'Activo':'Inactivo'}" />
-                    </p:column>
-                    <p:column width="100" headerText="Opciones">
-                        <p:commandButton icon="ui-icon-pencil" action="#{categoriaBean.seleccionar(cat)}" update="form1"/>
-                        <p:commandButton icon="ui-icon-trash" action="#{categoriaBean.eliminar(cat)}" update="dtCategoria"/>
-                    </p:column>
 
-
-                </p:dataTable>
-            </p:panel>
-
-
-
-            <!--INICO DLG NUEVA CATEGORIA-->
-                <p:panel id="formulario" header="Nuevo Registro" rendered="#{categoriaBean.categoria!=null}" class="ui-lg-4" >
-                    <p:panelGrid columns="2">
-                        <p:outputLabel value="Id:" for="txtId"/>
-                        <p:inputNumber id="txtId" value="#{categoriaBean.categoria.id}" 
-                                       decimalPlaces="0"
-                                       disabled="#{categoriaBean.modoEdicion==true}"
-                                       required="true" requiredMessage="El id es requerido">
-                            <p:ajax event="change" listener="#{categoriaBean.validarId()}" update="formulario,:growl"/>
-                        </p:inputNumber>
+                        <p:column >
+                            <f:facet name="header">
+                                <p:outputLabel value="Codigo"/>
+                            </f:facet>
+                            <h:outputText value="#{cat.id}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Nombre"/>
+                            </f:facet>
+                            <h:outputText value="#{cat.nombre}"/>
+                        </p:column>
+                        <p:column>
+                            <f:facet name="header">
+                                <p:outputLabel value="Estado"/>
+                            </f:facet>
+                            <h:outputLabel value="#{cat.estado.toString()=='A' ? 'Activo':'Inactivo'}" />
+                        </p:column>
+                        <p:column width="100" headerText="Opciones">
+                            <p:commandButton icon="ui-icon-pencil" action="#{categoriaBean.setCategoria(cat)}" update="form1"/>
+                            <p:commandButton icon="ui-icon-trash" action="#{categoriaBean.eliminar(cat)}" update="dtCategoria,:growl">
+                                <p:confirm header="Confirmacion" message="Confirme si desea eliminar la categoria"/>
+                            </p:commandButton>
+                        </p:column>
+                    </p:dataTable>
+                </p:panel>
 
 
 
-                        <p:outputLabel value="Nombre:" for="txtNombre"/>
-                        <p:inputText id="txtNombre" value="#{categoriaBean.categoria.nombre}" required="true" />
+                <!--INICO DLG NUEVA CATEGORIA-->
+                <p:panel id="formulario" header="#{categoriaBean.categoria.id ==null ? 'Registro de ' : 'Actualizacion de'}  Categoria" rendered="#{categoriaBean.categoria!=null}" class="ui-lg-6" style="text-align: center" >
 
-                        <p:outputLabel value="EStado:" for="txtEstado"/>
-                        <p:selectOneRadio id="txtEstado" value="#{categoriaBean.categoria.estado}" 
-                                          required="true" >
+                    <h:panelGrid columns="2">
+                        <p:outputLabel value="Codigo: " rendered="#{categoriaBean.categoria.id!=null}" style="font-size: 20px" />
+                        <p:inputText value="#{categoriaBean.categoria.id}" rendered="#{categoriaBean.categoria.id!=null}" class="cajasTexto" disabled="true"/>
+
+                        <p:outputLabel value="Nombre:" />
+                        <p:inputText value="#{categoriaBean.categoria.nombre}" class="cajasTexto" >
+                            <p:ajax event="change" listener="#{categoriaBean.validarNombre()}" update=":growl"/>
+                        </p:inputText>
+
+                        <p:outputLabel value="Estado: " rendered="#{categoriaBean.categoria.id!=null}" />
+                        <p:selectOneRadio id="txtEstado" value="#{categoriaBean.categoria.estado}" rendered="#{categoriaBean.categoria.id!=null}" class="cajasTexto" >
                             <f:selectItem itemLabel="Activo" itemValue="A"/>
                             <f:selectItem itemLabel="Inactivo" itemValue="I"/>
                         </p:selectOneRadio>
+                    </h:panelGrid>
+                    <div class="ui-g botonera">
+                        <p:commandButton value="Aceptar"  icon="pi pi-check" action="#{categoriaBean.grabar()}" update="form1,:growl" style="margin-right: 20px"/>
+                        <p:commandButton value="Cancelar" icon="pi pi-times" action="#{categoriaBean.init()}" update="form1" immediate="true"/>
+                    </div>
 
-                    </p:panelGrid>
-                    <p:commandButton value="Aceptar" actionListener="#{categoriaBean.guardar()}" update="form1,:growl" />
-                    <p:commandButton value="Cancelar" action="#{categoriaBean.cancelar()}" update="form1" immediate="true"/>
+
+
                 </p:panel>
-            <!--FIN DLG NUEVA CATEGORIA-->
-        </h:form>
-    </h:body>
+                <!--FIN DLG NUEVA CATEGORIA-->
+            </h:form>
+
+        </ui:define>
+    </ui:composition>
 </html>

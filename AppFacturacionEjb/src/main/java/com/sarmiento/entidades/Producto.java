@@ -2,8 +2,10 @@ package com.sarmiento.entidades;
 
 import java.io.Serializable;
 import java.math.BigDecimal;
+import java.util.List;
 import javax.persistence.Basic;
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -12,6 +14,8 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.NamedQueries;
 import javax.persistence.NamedQuery;
+import javax.persistence.OneToMany;
+import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 
@@ -20,6 +24,7 @@ import javax.validation.constraints.Size;
  * @author Cbos- Com. Sarmiento H. Luis A.
  */
 @Entity
+@Table(name = "producto")
 @NamedQueries({
     @NamedQuery(name = "Producto.findAll", query = "SELECT p FROM Producto p"),
     @NamedQuery(name = "Producto.findById", query = "SELECT p FROM Producto p WHERE p.id = :id"),
@@ -32,20 +37,26 @@ public class Producto implements Serializable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Basic(optional = false)
+    @Column(name = "id")
     private Integer id;
     @Basic(optional = false)
     @NotNull
-    @Size(min = 1, max = 50)
+    @Size(min = 1, max = 30)
+    @Column(name = "nombre")
     private String nombre;
     // @Max(value=?)  @Min(value=?)//if you know range of your decimal fields consider using these annotations to enforce field validation
     @Basic(optional = false)
     @NotNull
+    @Column(name = "precio")
     private BigDecimal precio;
     @Basic(optional = false)
     @NotNull
-    private Character estado;
+    @Column(name = "estado")
+    private Character estado='A';
+    @OneToMany(cascade = CascadeType.MERGE, mappedBy = "producto")
+    private List<DetalleFactura> detalleFacturaList;
     @JoinColumn(name = "id_categoria", referencedColumnName = "id")
-    @ManyToOne(optional = false,cascade = CascadeType.ALL)
+    @ManyToOne(optional = false)
     private Categoria categoria;
 
     public Producto() {
@@ -92,6 +103,14 @@ public class Producto implements Serializable {
 
     public void setEstado(Character estado) {
         this.estado = estado;
+    }
+
+    public List<DetalleFactura> getDetalleFacturaList() {
+        return detalleFacturaList;
+    }
+
+    public void setDetalleFacturaList(List<DetalleFactura> detalleFacturaList) {
+        this.detalleFacturaList = detalleFacturaList;
     }
 
     public Categoria getCategoria() {

@@ -5,6 +5,7 @@ import com.sarmiento.sessionBeans.ProductoFacadeLocal;
 import com.sarmiento.utilitarios.Mensaje;
 import java.io.Serializable;
 import java.util.List;
+import java.util.stream.Collectors;
 import javax.annotation.PostConstruct;
 import javax.ejb.EJB;
 import javax.inject.Named;
@@ -17,7 +18,6 @@ public class ProductoBean implements Serializable {
 //    INICIO VARIABLES
     private List<Producto> productoList;
     private Producto producto;
-    private boolean modoEdicion;
 //    FIN VARIABLES
 
 //INICIO INYECCION 
@@ -47,18 +47,12 @@ public class ProductoBean implements Serializable {
         return producto;
     }
 
+    //usamos el metodo de los setters para poder seleccionar el producto antes de eliminar
     public void setProducto(Producto producto) {
         this.producto = producto;
     }
-
-    public boolean isModoEdicion() {
-        return modoEdicion;
-    }
-
-    public void setModoEdicion(boolean modoEdicion) {
-        this.modoEdicion = modoEdicion;
-    }
     //FIN METODOS GETTERS Y SETTERS
+
 
 ///    INICO METODOS
     public void nuevo() {
@@ -68,21 +62,24 @@ public class ProductoBean implements Serializable {
     //metodo para guardar y para actualizar
     public void grabar() {
         try {
-            //si el id del produto es nulo se activa el nuevo caso contrario el id ya tiene un valor es edicion
-            if (producto.getId() == null) {
-                productoFacadeLocal.create(producto);
-            } else {
+            if (producto.getId() != null) {
                 productoFacadeLocal.edit(producto);
+                Mensaje.mostrarExito("Actualizacion con exito");
+            } else {
+                productoFacadeLocal.create(producto);
+                Mensaje.mostrarExito("Registro Exitoso");
             }
             init();
-            Mensaje.mostrarExito("Producto Grabado Exitosamente");
         } catch (Exception e) {
-            Mensaje.mostrarError("Ourrio un error al grabar un producto"+e);
+            if (e.getCause().getCause().getClass().getName().equals("org.hibernate.exception.ConstraintViolationException")) {
+                if (e.getCause().getCause().getMessage().contains("could not execute statement")) {
+                    Mensaje.mostrarError("El producto ya esta registrado");
+                }
+            }
         }
     }
-    
-    
-    public void eliminar(Producto producto){
+
+    public void eliminar(Producto producto) {
         try {
             productoFacadeLocal.remove(producto);
             init();
@@ -91,14 +88,20 @@ public class ProductoBean implements Serializable {
             Mensaje.mostrarError("El producto no se elimino");
         }
     }
-       
+
     //metodo para validar si el nombre ya extiste
-    public void verificarNombre(){
-        Producto pro=productoFacadeLocal.findByNombre(producto.getNombre());
-        if(pro!=null){
+    public void verificarNombre() {
+        Producto pro = productoFacadeLocal.findByNombre(producto.getNombre());
+        if (pro != null) {
             Mensaje.mostrarAdvertencia("El producto con este nombre ya existe");
         }
     }
+
     
+    
+    
+    public List<Producto> getProductosActivos(){
+        return productoList.stream().filter(p->p.getEstado()=='A').collect(Collectors.toList());
+    }
 //    FIN METODOS
 }
